@@ -110,10 +110,13 @@ class Provider extends AbstractProvider
      */
     public function getAccessTokenResponse($code)
     {
+        $fields = $this->getTokenFields($code);
+        $fields['grant_type'] = 'authorization_code';
+        
         $response = $this->getHttpClient()->post($this->getTokenUrl(), [
             RequestOptions::HEADERS     => ['Accept' => 'application/json'],
-            RequestOptions::FORM_PARAMS => $this->getTokenFields($code),
-            RequestOptions::PROXY       => $this->getConfig('proxy'),
+            RequestOptions::FORM_PARAMS => $fields,
+            RequestOptions::PROXY       => $this->getConfig('proxy')
         ]);
 
         return json_decode($response->getBody(), true);
